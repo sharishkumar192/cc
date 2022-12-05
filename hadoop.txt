@@ -1,0 +1,86 @@
+cd Downloads
+tar zxvf jdk-8u60-linux-x64.gz
+cd jdk1.8.0_60/
+pwd
+sudo nano /etc/profile
+JAVA_HOME = pwd
+PATH = $PATH:$JAVA_HOME/bin
+export PATH JAVA_HOME
+
+sudo apt-get install openssh-server
+ssh-keygen
+ssh-copy-id -i localhost
+
+cd..
+
+tar zxvf hadoop-2.7.0.tar.gzhadoop
+cd hadoop-2.7.0/
+pwd
+sudo nano /etc/profile
+JAVA_HOME = pwd
+HADOOP_PREFIX = pwd
+PATH = $PATH:$JAVA_HOME/bin
+PATH = $PATH:$HADOOP_PREFIX/bin
+export PATH JAVA_HOME HADOOP_PREFIX
+source /etc/profile
+hadoop version
+
+cd etc
+cd hadoop
+nano hadoop-env.sh
+export JAVA_HOME = pwd
+export HADOOP_PREFIX = pwd
+
+nano core-site.xml
+<property>
+<name>fs.defaultFS</name>
+<value>hdfs://localhost:9000</value>
+</property>
+
+nano hdfs-site.xml
+<property>
+<name>dfs.replication</name>
+<value>1</value>
+</property>
+
+cp mapred-site.xml.template mapred-site.xml
+nano core-site.xml
+<property>
+<name>mapreduce.framework.name</name>
+<value>yarn</value>
+</property>
+
+
+nano yarn-site.xml
+<property>
+<name>yarn.nodemanager.aux-services</name>
+<value>mapreduce_shuffle</value>
+</property>
+
+cd..
+cd..
+
+bin/hadoop-namenode -format
+sbin/start-dfs.sh
+jps
+
+sbin/start-yarn.sh
+jps
+
+http:\\localhost:50070
+
+bin/hdfs dfs -mkdir/user1
+-----new window
+cd..
+tar zxvf mrsampledata.tar.gz
+
+bin/hdfs dfs -put ../file1.text/user1
+
+bin/hadoop jar share/hadoop/mapreduce/hadoopmapreduce-examples-2.7.0.jar grep /user1/* /output '(CSE)'
+
+bin/hadoop jar share/hadoop/mapreduce/hadoopmapreduce-examples-2.7.0.jar wordcount /user1/file1.txt /output1
+
+
+bin/hdfs dfs -cat /output/*
+
+bin/hdfs dfs -cat /output1/*

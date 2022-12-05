@@ -1,0 +1,5 @@
+sudo apt install gcc
+gcc -version
+gedit program.c
+gcc program.c -0 program
+./a.out
